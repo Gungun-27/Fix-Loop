@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FixLoop: accessibility fixes that are verified</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🔁%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2ede3;--ink:#17203a;--mut:#454d62;--card:#fff;--line:#cfc8b8;--navy:#121e3a;--red:#b8141f;--delbg:#fbd5d8;--delfg:#5a0d14;--insbg:#e3f6a8;--insfg:#243300;--btn:#121e3a;--btnfg:#f2ede3;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1426;--ink:#eee9dd;--mut:#b4bbd0;--card:#172040;--line:#2c3760;--red:#ff8a92;--delbg:#4a1a22;--delfg:#ffd6da;--insbg:#2f4510;--insfg:#e8ffb0;--btn:#f2ede3;--btnfg:#121e3a}}
+:root[data-theme="dark"]{--bg:#0d1426;--ink:#eee9dd;--mut:#b4bbd0;--card:#172040;--line:#2c3760;--red:#ff8a92;--delbg:#4a1a22;--delfg:#ffd6da;--insbg:#2f4510;--insfg:#e8ffb0;--btn:#f2ede3;--btnfg:#121e3a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:var(--navy);color:#f2ede3;padding:32px 20px 84px;position:relative;overflow:hidden}
+.wrap,.sec{max-width:960px;margin:0 auto}
+.sec{padding:28px 20px}
+h1{font:400 clamp(44px,10vw,92px)/.95 "Bricolage Grotesque","Segoe UI",system-ui,sans-serif;margin:10px 0 16px}
+h2{font:400 34px/1.1 "Bricolage Grotesque","Segoe UI",system-ui,sans-serif;color:var(--red);margin:4px 0 14px}
+h3{font:600 15px "DM Sans",system-ui,sans-serif;margin:26px 0 8px}
+.tag{font:600 12px "DM Sans",system-ui,sans-serif;letter-spacing:.04em;margin:0}
+.lbl{color:var(--mut);border-top:2px solid var(--line);padding-top:10px}
+header .tag{color:#d9f25c}
+.tape{position:absolute;left:-5%;width:110%;font:600 12px "DM Sans",system-ui,sans-serif;letter-spacing:.08em;padding:6px 0;color:#121e3a;white-space:nowrap;overflow:hidden}
+.t1{background:#d9f25c;transform:rotate(-1.6deg);bottom:34px}
+.t2{background:#f4a6b7;transform:rotate(1.2deg);bottom:8px}
+label{font-weight:600;display:block;margin-bottom:6px}
+textarea{width:100%;min-height:190px;box-sizing:border-box;font:13px/1.4 "DM Sans",system-ui,sans-serif;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:6px;padding:10px}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+button{font:600 14px "DM Sans",system-ui,sans-serif;padding:11px 16px;border-radius:6px;border:2px solid var(--btn);background:var(--btn);color:var(--btnfg);cursor:pointer}
+button.alt{background:transparent;color:var(--ink);border-color:var(--ink)}
+button:disabled{opacity:.6;cursor:wait}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+#msg{font:14px "DM Sans",system-ui,sans-serif;color:var(--mut)}
+.stats,.fx{list-style:none;padding:0;margin:14px 0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stats li,.fx li{background:var(--card);border:2px solid var(--line);border-radius:8px;padding:12px}
+.fx li{margin:10px 0}
+.stats b{display:block;font:400 44px/1 "Bricolage Grotesque","Segoe UI",system-ui,sans-serif}
+.stats span{font:13px "DM Sans",system-ui,sans-serif;color:var(--mut)}
+pre{margin:6px 0;white-space:pre-wrap;word-break:break-all;overflow-x:auto;font:12px/1.4 "DM Sans",system-ui,sans-serif;padding:8px;border-radius:4px;background:var(--bg)}
+pre.del{background:var(--delbg);color:var(--delfg)}
+pre.ins{background:var(--insbg);color:var(--insfg)}
+small{color:var(--mut)}
+a{color:var(--red)}
+code{font:13px "DM Sans",system-ui,sans-serif}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+header{padding:44px 20px 100px}
+.hero{display:grid;gap:40px;align-items:center}
+@media(min-width:820px){.hero{grid-template-columns:1.15fr .85fr}}
+h1{font-size:clamp(46px,8.5vw,86px);letter-spacing:-.01em}
+.lead{font-size:18px;max-width:52ch;margin:0 0 22px;color:#dfe3ee}
+.cta{background:#d9f25c;color:#121e3a;border-color:#d9f25c;font-size:15px;padding:14px 20px}
+.ghost{font:600 14px "DM Sans",system-ui,sans-serif;color:#f2ede3;padding:12px 6px;text-underline-offset:4px;align-self:center}
+header :focus-visible{outline-color:#d9f25c}
+.loopcard{list-style:none;margin:0;padding:14px 20px;background:#f2ede3;color:#121e3a;border-radius:12px;transform:rotate(1.8deg);box-shadow:9px 9px 0 #f4a6b7}
+.loopcard li{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:center;padding:12px 0;border-bottom:2px dashed #c9c2b2}
+.loopcard li:last-child{border:0}
+.loopcard b{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#121e3a;color:#d9f25c;font:600 14px "DM Sans",system-ui,sans-serif}
+.loopcard strong{display:block;font:400 24px/1.1 "Bricolage Grotesque","Segoe UI",system-ui,sans-serif}
+.loopcard span{font-size:14px;color:#454d62}
+.drop{background:var(--card);border:2px solid var(--ink);border-radius:12px;padding:18px;box-shadow:7px 7px 0 var(--line)}
+details{margin-top:8px;color:var(--mut)}
+summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.stats li{border-top:6px solid var(--ink)}
+.stats li:nth-child(1){border-top-color:var(--red)}
+.stats li:nth-child(3){border-top-color:#8fb800}
+.stats b{font-size:56px}
+#fixes li{border-left:6px solid #8fb800}
+#human li{border-left:6px solid var(--red)}
+
+.skip{position:absolute;left:-999px;top:8px;background:#d9f25c;color:#121e3a;padding:8px 12px;border-radius:6px;z-index:9;font-weight:700}
+.skip:focus{left:8px}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:36px}
+.nav a{color:#f2ede3;font-weight:600;text-decoration:none;margin-left:22px}
+.nav a:hover{text-decoration:underline}
+.nav .logo{display:flex;align-items:center;gap:10px;font:800 22px "Bricolage Grotesque",sans-serif;margin-left:0}
+h1,h2{font-weight:800;letter-spacing:-.025em}
+h1{font-size:clamp(44px,8vw,82px);line-height:1}
+h2{font-size:32px}
+.stats b,.loopcard strong{font-weight:800;letter-spacing:-.02em}
+.loopcard strong{font-size:22px}
+.tag{text-transform:uppercase;letter-spacing:.12em;font-size:11.5px}
+.tape{font-weight:800;letter-spacing:.16em}
+textarea,pre,code{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
+button{font-weight:700;letter-spacing:.01em}
+.steps{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:14px 0}
+.steps[hidden]{display:none}
+.steps li{padding:8px 16px;border-radius:999px;border:2px solid var(--line);font-weight:700;color:var(--mut)}
+.steps li.on{background:#d9f25c;color:#121e3a;border-color:var(--ink)}
+.steps li.done{border-color:#8fb800;color:var(--ink)}
+.steps li.done::before{content:"\2713  "}
+.sev{margin:20px 0}
+.srow{display:grid;grid-template-columns:84px 1fr 78px;gap:12px;align-items:center;margin:8px 0;font-size:14px}
+.srow span{text-transform:capitalize;font-weight:600}
+.srow b{text-align:right}
+.bar{position:relative;height:14px;background:var(--line);border-radius:7px;overflow:hidden}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:7px;transform-origin:left;animation:grow .9s ease-out both}
+.b0{background:var(--red);opacity:.4}
+.b1{background:var(--ink)}
+@keyframes grow{from{transform:scaleX(0)}}
+.prev{display:grid;gap:16px;margin:10px 0 6px}
+@media(min-width:780px){.prev{grid-template-columns:1fr 1fr}}
+.prev figure{margin:0}
+.prev figcaption{font-weight:700;font-size:14px;margin-bottom:6px}
+.frame{height:340px;overflow:hidden;border:2px solid var(--ink);border-radius:10px;background:#fff;box-shadow:6px 6px 0 var(--line)}
+.frame iframe{width:250%;height:250%;transform:scale(.4);transform-origin:0 0;border:0}
+@media(prefers-reduced-motion:reduce){.bar i{animation:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#check">Skip to the checker</a>
+<header id="top">
+ <nav class="wrap nav" aria-label="Main">
+  <a class="logo" href="#top"><svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="none" stroke="#d9f25c" stroke-width="3.5" stroke-dasharray="52 17" stroke-linecap="round"/><path d="M22 3l5 5-6 3z" fill="#d9f25c"/><circle cx="16" cy="16" r="3.5" fill="#f4a6b7"/></svg>FixLoop</a>
+  <span><a href="#check">Check a page</a><a href="#h-lim">Limits</a></span>
+ </nav>
+ <div class="wrap hero">
+  <div>
+   <p class="tag">Accessibility checker that proves its fixes</p>
+   <h1>Fix it. Then prove it worked.</h1>
+   <p class="lead">Add a web page. FixLoop finds what blocks people who use screen readers or have low vision, fixes what it safely can, then scans again so you keep only the fixes that truly worked.</p>
+   <div class="row"><button id="try" type="button" class="cta">Try it on a sample page</button><a class="ghost" href="#check">Check my own page</a></div>
+  </div>
+  <ol class="loopcard" aria-label="How FixLoop works">
+   <li><b>1</b><div><strong>Scan</strong><span>Finds the barriers on your page</span></div></li>
+   <li><b>2</b><div><strong>Fix</strong><span>Writes a small patch for each one</span></div></li>
+   <li><b>3</b><div><strong>Scan again</strong><span>Tests that every patch really worked</span></div></li>
+   <li><b>4</b><div><strong>Keep</strong><span>Only proven fixes reach you</span></div></li>
+  </ol>
+ </div>
+ <div class="tape t1" aria-hidden="true">FIND IT &rarr; FIX IT &rarr; SCAN AGAIN &rarr; PROVE IT &rarr; FIND IT &rarr; FIX IT &rarr; SCAN AGAIN &rarr; PROVE IT &rarr; FIND IT &rarr; FIX IT &rarr; SCAN AGAIN</div>
+ <div class="tape t2" aria-hidden="true">NO OVERLAYS &rarr; REAL PATCHES &rarr; NO OVERLAYS &rarr; REAL PATCHES &rarr; NO OVERLAYS &rarr; REAL PATCHES &rarr; NO OVERLAYS &rarr; REAL PATCHES</div>
+</header>
+<main>
+ <section class="sec" id="check" aria-labelledby="h-in">
+  <p class="tag lbl">Step 1: Add your page</p>
+  <h2 id="h-in">Check a page of your own</h2>
+  <div class="drop">
+   <label for="src">Paste your page here</label>
+   <textarea id="src" spellcheck="false" placeholder="Paste your page code here, or drop a saved page onto this box"></textarea>
+   <div class="row">
+    <button id="run" type="button">Check my page</button>
+    <button id="pick" type="button" class="alt">Upload a saved page</button>
+    <button id="sample" type="button" class="alt">Fill in the sample</button>
+    <input id="up" type="file" accept=".html,.htm" hidden>
+   </div>
+   <details><summary>How do I get my page?</summary>
+    <ol><li>Open your page in Chrome.</li><li>Right-click, choose View page source, select everything and copy.</li><li>Paste it above. Or press Ctrl+S to save the page and upload that file.</li></ol>
+   </details>
+  </div>
+ </section>
+ <section class="sec" aria-labelledby="h-out">
+  <p class="tag lbl">Step 2: What we fixed</p>
+  <h2 id="h-out">Fixed, then proven</h2>
+  <p id="msg" role="status" aria-live="polite">Nothing scanned yet.</p>
+  <ol class="steps" id="steps" aria-label="Progress" hidden><li>Scan</li><li>Fix</li><li>Scan again</li><li>Keep</li></ol>
+  <div id="out" hidden>
+   <ul class="stats" id="stats"></ul>
+   <div class="sev" id="sev"></div>
+   <h3>Your page, before and after</h3>
+   <div class="prev">
+    <figure><figcaption>Before</figcaption><div class="frame"><iframe id="pb" title="Your page before fixing" sandbox></iframe></div></figure>
+    <figure><figcaption>After</figcaption><div class="frame"><iframe id="pa" title="Your page after fixing" sandbox></iframe></div></figure>
+   </div>
+   <p><small>Red outline: a problem was found. Green outline: fixed and proven. Dashed amber outline: still needs a person.</small></p>
+   <h3>Fixes that passed the second scan (untick any you don't want)</h3>
+   <ul class="fx" id="fixes"></ul>
+   <h3>Still needs a person</h3>
+   <ul class="fx" id="human"></ul>
+   <div class="row">
+    <button id="dlh" type="button">Download the fixed page</button>
+    <button id="dlr" type="button" class="alt">Download the fix list</button>
+   </div>
+  </div>
+ </section>
+ <section class="sec" aria-labelledby="h-lim">
+  <p class="tag lbl">Honest limits</p>
+  <h2 id="h-lim">A clean scan is not a compliance certificate</h2>
+  <p style="max-width:70ch">Automated checks cover only part of the accessibility guidelines (WCAG). FixLoop never claims compliance: it shows what it fixed and proved, and what still needs a person using a keyboard and a screen reader. Your page never leaves your browser, and its scripts are removed before checking.</p>
+ </section>
+</main>
+<iframe id="stage" title="Hidden test copy of the pasted page" tabindex="-1" aria-hidden="true" style="position:fixed;top:0;left:0;width:1200px;height:1000px;border:0;opacity:0;z-index:-1"></iframe>
+<script src="https://cdn.jsdelivr.net/npm/axe-core@4.10.2/axe.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),AXE='https://cdn.jsdelivr.net/npm/axe-core@4.10.2/axe.min.js';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const say=t=>{$('#msg').textContent=t};
+const NICE={'html-has-lang':'Page language','html-lang-valid':'Page language','label':'Form field name','select-name':'Form field name','link-name':'Link name','button-name':'Button name','color-contrast':'Text contrast'};
+const SAMPLE=`<!doctype html><html><head><meta charset="utf-8"><title>City Services Portal</title><style>body{font-family:sans-serif;background:#fff}.hero{background:#1b4f72;color:#7fa7c4;padding:16px}.mut{color:#9aa0a6}</style></head><body><div class="hero"><h1>City Services Portal</h1><p>Pay bills, report issues, track applications.</p></div><p class="mut">Last updated 3 October. Helpline hours 9am to 5pm.</p><form><input type="text" name="app_no"><input type="email" name="user_email"><select name="ward"><option>Ward 1</option></select><button type="submit"><i class="fa fa-search"></i></button></form><a href="https://facebook.com/city"><i class="fa fa-facebook"></i></a><a href="/x"><img src="a.png"></a><img src="banner.jpg"></body></html>`;
+
+/* 1. make a safe copy: no scripts, no handlers */
+const clean=h=>{const d=new DOMParser().parseFromString(h,'text/html');
+ d.querySelectorAll('script,iframe,object,embed,base,meta[http-equiv]').forEach(n=>n.remove());
+ d.querySelectorAll('*').forEach(n=>[...n.attributes].forEach(a=>{if(/^on/i.test(a.name)||/^\s*javascript:/i.test(a.value))n.removeAttribute(a.name)}));
+ return '<!doctype html>'+d.documentElement.outerHTML};
+const load=h=>new Promise(r=>{const f=$('#stage');f.onload=()=>{f.onload=null;r(f)};f.srcdoc=h});
+const engine=async f=>{const w=f.contentWindow;
+ if(!w.axe)await new Promise((ok,no)=>{const s=f.contentDocument.createElement('script');s.id='fl-axe';s.src=AXE;s.onload=ok;s.onerror=()=>no(Error('Could not load the axe-core engine. Check your internet connection.'));f.contentDocument.head.appendChild(s)});
+ return w};
+const scan=async w=>(await w.axe.run(w.document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa']},resultTypes:['violations']})).violations;
+const count=v=>v.reduce((n,x)=>n+x.nodes.length,0);
+
+/* 2. fix recipes */
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const hum=s=>(s||'').replace(/[-_/.#]+/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/\s+/g,' ').trim();
+const labelFor=el=>{const c=[el.getAttribute('placeholder'),el.title,hum(el.name),hum(el.id),el.type==='search'?'search':''].find(x=>x&&x.trim());return c?cap(c.trim()):null};
+const nameFor=el=>{
+ const c=[el.title,el.querySelector('img[alt]')?.alt,el.querySelector('svg title')?.textContent].find(x=>x&&x.trim());
+ if(c)return c.trim();
+ const cls=[el,...el.querySelectorAll('[class]')].map(x=>x.className?.baseVal??x.className).join(' ');
+ const m=((el.getAttribute('href')||'')+' '+cls).match(/facebook|twitter|instagram|linkedin|youtube|whatsapp|telegram|github|search|menu|close|home|cart|phone|mail|email|download|print|next|prev|previous/i);
+ if(m)return cap(m[0].toLowerCase());
+ return el.type==='submit'?'Submit':null};
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const hx=c=>'#'+c.map(v=>v.toString(16).padStart(2,'0')).join('');
+const lum=h=>{const[r,g,b]=rgb(h).map(v=>{v/=255;return v<=.03928?v/12.92:((v+.055)/1.055)**2.4});return .2126*r+.7152*g+.0722*b};
+const cr=(a,b)=>{const[x,y]=[lum(a),lum(b)].sort((p,q)=>q-p);return(x+.05)/(y+.05)};
+const fixColor=(fg,bg,need)=>{bg=bg.slice(0,7);let c=rgb(fg);const dark=lum(bg)>.5;
+ for(let i=0;i<80&&cr(hx(c),bg)<need+.05;i++)c=c.map(v=>Math.round(dark?v*.93:v+(255-v)*.1));
+ return cr(hx(c),bg)>=need?hx(c):null};
+const langOf=d=>(d.body.textContent.match(/[\u0900-\u097F]/g)||[]).length>40?'hi':'en';
+
+function plan(w,vs){
+ const d=w.document,P=[],seen=new Set();
+ const add=p=>{const k=p.rule+p.sel;if(!seen.has(k)){seen.add(k);P.push(p)}};
+ for(const v of vs)for(const n of v.nodes){
+  const sel=n.target.length===1?n.target[0]:null;if(!sel)continue;
+  const el=d.querySelector(sel);if(!el)continue;
+  const id=v.id;let val;
+  if(id==='html-has-lang'||id==='html-lang-valid')
+   add({rule:id,sel,el:d.documentElement,kind:'lang',name:'lang',value:langOf(d),why:'Screen readers use the page language to pick the right voice. Check it matches your content.'});
+  else if((id==='label'||id==='select-name')&&(val=labelFor(el)))
+   add({rule:id,sel,el,kind:'attr',name:'aria-label',value:val,why:'The field had no accessible name. The name comes from its own attributes, so please confirm the wording.'});
+  else if((id==='link-name'||id==='button-name')&&(val=nameFor(el)))
+   add({rule:id,sel,el,kind:'attr',name:'aria-label',value:val,why:'This control had no name for screen readers. The name comes from its title, image, icon class or link.'});
+  else if(id==='color-contrast'){
+   const x=n.any.find(a=>a.id==='color-contrast')?.data;
+   if(x&&x.fgColor&&x.bgColor&&(val=fixColor(x.fgColor,x.bgColor,parseFloat(x.expectedContrastRatio))))
+    add({rule:id,sel,el,kind:'style',name:'color',value:val,why:`Contrast was ${x.contrastRatio}, it needs ${x.expectedContrastRatio}. FixLoop picked the nearest colour that passes.`})}
+ }
+ return P}
+const tag=e=>e.cloneNode(false).outerHTML.replace(/<\/[^>]+>$/,'');
+const oldOf=p=>p.kind==='style'?p.el.getAttribute('style'):p.el.getAttribute(p.name);
+const apply=p=>p.kind==='style'?p.el.style.setProperty('color',p.value,'important'):p.el.setAttribute(p.name,p.value);
+const undo=p=>{const a=p.kind==='style'?'style':p.name;p.old===null?p.el.removeAttribute(a):p.el.setAttribute(a,p.old)};
+
+/* 3. the loop: scan, patch, re-scan, keep only what is proven */
+$('#run').onclick=async()=>{
+ const raw=$('#src').value.trim();
+ if(!raw)return say('Add a page first, or try the sample.');
+ const b=$('#run');b.disabled=true;$('#out').hidden=true;$('#steps').hidden=false;
+ try{
+  say('Loading a safe copy of your page...');
+  S0=clean(raw);const w=await engine(await load(S0));
+  say('Scanning...');setStep(1);
+  const v1=await scan(w),P=plan(w,v1);
+  setStep(2);P.forEach(p=>{p.old=oldOf(p);p.before=tag(p.el);apply(p);p.after=tag(p.el)});
+  say('Re-scanning to verify every fix...');setStep(3);
+  const v2=await scan(w);
+  const still=p=>v2.some(v=>v.id===p.rule&&v.nodes.some(n=>n.target[0]===p.sel));
+  P.forEach(p=>{p.ok=!still(p);p.use=p.ok;if(!p.ok)undo(p)});
+  const v3=P.some(p=>!p.ok)?await scan(w):v2;
+  setStep(5);show(w,v1,v3,P);
+  say(`Done. ${P.filter(p=>p.ok).length} fixes proven, ${count(v3)} problems still need a person.`);$('#h-out').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+ }catch(e){say('Something went wrong: '+e.message)}
+ b.disabled=false};
+
+let S={};
+function show(w,v1,v3,P){
+ S={w,P,v3,before:count(v1),after:count(v3)};
+ const k=new Set(v1.flatMap(v=>v.nodes.map(n=>v.id+n.target[0])));
+ const fresh=v3.flatMap(v=>v.nodes.filter(n=>!k.has(v.id+n.target[0])));
+ const ok=P.filter(p=>p.ok);
+ $('#stats').innerHTML=[['Problems found',S.before],['Problems left',S.after],['Fixes proven',ok.length],['New problems caused',fresh.length]].map(([a,b])=>`<li><b>${b}</b><span>${a}</span></li>`).join('');
+ $('#fixes').innerHTML=ok.length?ok.map(p=>`<li><label><input type="checkbox" data-i="${P.indexOf(p)}" checked> ${esc(NICE[p.rule]||p.rule)}</label><code>${esc(p.sel)}</code><pre class="del">- ${esc(p.before)}</pre><pre class="ins">+ ${esc(p.after)}</pre><small>${esc(p.why)}</small></li>`).join(''):'<li>No safe automatic fixes were found for this page.</li>';
+ $('#human').innerHTML=v3.length?v3.map(v=>`<li><strong>${esc(v.help)}</strong> (${v.nodes.length} found, ${esc(v.impact||'unrated')}) <a href="${esc(v.helpUrl)}" target="_blank" rel="noopener">How to fix this</a><pre>${esc((v.nodes[0].html||'').slice(0,160))}</pre></li>`).join(''):'<li>Nothing left in the checks FixLoop runs. A person still needs to test with a keyboard and a screen reader.</li>';
+ $('#out').hidden=false;sev(v1,v3);prev(v1,v3,P);countUp()}
+$('#fixes').onchange=e=>{if(e.target.dataset.i!=null)S.P[e.target.dataset.i].use=e.target.checked};
+
+/* 4. exports */
+const dl=(n,t,m)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:m}));a.download=n;a.click()};
+$('#dlh').onclick=()=>{if(!S.P)return;
+ S.P.forEach(p=>p.ok&&p.use?apply(p):undo(p));
+ const c=S.w.document.documentElement.cloneNode(true);c.querySelector('#fl-axe')?.remove();
+ dl('fixloop-patched.html','<!doctype html>\n'+c.outerHTML,'text/html')};
+$('#dlr').onclick=()=>{if(!S.P)return;
+ dl('fixloop-report.md',`# FixLoop report\n\nIssues before: ${S.before}\nIssues after: ${S.after}\n\nThis is not a compliance certificate. Automated checks cover only part of WCAG.\n\n## Verified fixes (apply these in your source)\n`+
+  (S.P.filter(p=>p.ok&&p.use).map(p=>`- \`${p.sel}\`: ${NICE[p.rule]}, set ${p.name} to "${p.value}". ${p.why}`).join('\n')||'- none')+
+  `\n\n## Still needs a person\n`+(S.v3.map(v=>`- ${v.help} (${v.nodes.length} found): ${v.helpUrl}`).join('\n')||'- none'),'text/markdown')};
+let S0='';
+const IMP=['critical','serious','moderate','minor'];
+const setStep=n=>document.querySelectorAll('#steps li').forEach((l,i)=>{l.className=i<n-1?'done':i===n-1?'on':''});
+const sels=v=>v.flatMap(x=>x.nodes.filter(n=>n.target.length===1&&n.target[0]!=='html').map(n=>n.target[0]));
+const mark=(h,list)=>{const d=new DOMParser().parseFromString(h,'text/html');list.forEach(([sel,css])=>{try{const e=d.querySelector(sel);if(e)e.setAttribute('style',(e.getAttribute('style')||'')+';outline:'+css+';outline-offset:2px')}catch(_){}});return '<!doctype html>'+d.documentElement.outerHTML};
+function prev(v1,v3,P){
+ $('#pb').srcdoc=mark(S0,sels(v1).map(x=>[x,'3px solid #e5484d']));
+ const c=S.w.document.documentElement.cloneNode(true);c.querySelector('#fl-axe')?.remove();
+ $('#pa').srcdoc=mark('<!doctype html>'+c.outerHTML,[...P.filter(p=>p.ok&&p.kind!=='lang').map(p=>[p.sel,'3px solid #2fb344']),...sels(v3).map(x=>[x,'3px dashed #f0a000'])])}
+function sev(v1,v3){
+ const c=v=>IMP.map(i=>v.filter(x=>x.impact===i).reduce((n,x)=>n+x.nodes.length,0)),a=c(v1),b=c(v3),m=Math.max(1,...a);
+ $('#sev').innerHTML='<h3>Problems by severity</h3>'+IMP.map((n,i)=>`<div class="srow"><span>${n}</span><div class="bar"><i class="b0" style="width:${100*a[i]/m}%"></i><i class="b1" style="width:${100*b[i]/m}%"></i></div><b>${a[i]} to ${b[i]}</b></div>`).join('')}
+const ta=$('#src');ta.ondragover=e=>e.preventDefault();
+ta.ondrop=async e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f){ta.value=await f.text();say('Loaded '+f.name+'. Press Check my page.')}};
+$('#try').onclick=()=>{$('#src').value=SAMPLE;$('#run').click()};
+const countUp=()=>{if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;document.querySelectorAll('.stats b').forEach(el=>{const t=+el.textContent;if(!t)return;let s0=null;const f=ts=>{s0??=ts;const q=Math.min((ts-s0)/700,1);el.textContent=Math.round(t*q);if(q<1)requestAnimationFrame(f)};requestAnimationFrame(f)})};
+$('#sample').onclick=()=>{$('#src').value=SAMPLE;say('Sample loaded. Press Check my page.')};
+$('#pick').onclick=()=>$('#up').click();
+$('#up').onchange=async e=>{const f=e.target.files[0];if(f){$('#src').value=await f.text();say('Loaded '+f.name+'. Press Check my page.')}};
+</script>
+</body>
+</html>

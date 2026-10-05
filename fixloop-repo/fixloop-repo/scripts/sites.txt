@@ -1,0 +1,7 @@
+# One public home page URL per line. Lines starting with # are ignored.
+# Aim for about 50. Mix a few kinds, for example:
+#   - colleges and universities
+#   - municipal corporations and councils
+#   - district and government hospitals
+#   - state government department sites
+# Add the URLs below this line.
